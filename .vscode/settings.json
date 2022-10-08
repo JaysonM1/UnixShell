@@ -1,7 +1,16 @@
 {
     "files.associations": {
         "types.h": "c",
-        "get_path.h": "c"
+        "get_path.h": "c",
+        "unistd.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "utmpx.h": "c",
+        "pipefunction.h": "c",
+        "string.h": "c",
+        "wildcard.h": "c",
+        "readcommand.h": "c",
+        "output.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

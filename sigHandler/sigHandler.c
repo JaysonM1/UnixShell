@@ -2,7 +2,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sigInt.h"
+#include <signal.h>
+#include "sigHandler.h"
 
 void sigintHandler(int sig_num)
 {  

@@ -13,8 +13,11 @@
 #include <utmpx.h>
 #include <pthread.h>
 #include "sshell.h"
-#include "./sigHandler/sigHandler.c"
-
+#include "./sigHandler/sigHandler.h"
+#include "./commandHandler/readCommand.h"
+#include "./terminal/redirect.h"
+#include "./terminal/pipefunction.h"
+#include "./terminal/output.h"
 
 int main(int argc, char **argv, char **envp){
     //Shell variables:
@@ -31,6 +34,9 @@ int main(int argc, char **argv, char **envp){
     char *save = getcwd(NULL,0);
     int cdaint=1;
 
+    //char command[100];
+    char *command = calloc(PROMPTMAX, sizeof(char));
+    int numParameters;
 
 
     //command and parameter variables
@@ -54,4 +60,19 @@ int main(int argc, char **argv, char **envp){
     uid = getuid();
     password_entry = getpwuid(uid);               /* get passwd info */
     homedir = password_entry->pw_dir;
+
+    //shell loop
+     while(1){
+
+        //update pathlist and current directory
+        redirect_terminal();
+        pathlist = get_path();
+        pwd = getcwd(NULL, 0);
+        //prompt msg to user
+        printf("%s [%s]>", prompt, pwd);
+
+          //read command that the user enters and parses the command
+        read_command(command, para, &numParameters, args);
+        set_redirect(command, para, &numParameters, args, envp);
+     }
 }
