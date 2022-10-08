@@ -13,6 +13,7 @@
 #include <utmpx.h>
 #include <pthread.h>
 #include "sshell.h"
+#include "./sigHandler/sigHandler.c"
 
 
 int main(int argc, char **argv, char **envp){
@@ -37,11 +38,20 @@ int main(int argc, char **argv, char **envp){
     //char *para[20];
     char **para = calloc(MAXARGS, sizeof(char*));
 
-    //command and parameter variables
-    char **args = calloc(MAXARGS, sizeof(char*));
-    //char *para[20];
-    char **para = calloc(MAXARGS, sizeof(char*));
 
-    
-    return 0;
+    //external command variables
+    //char search[128];
+    char *search = calloc(PROMPTMAX, sizeof(char));
+    signal(SIGINT, sigintHandler); 
+    signal(SIGTSTP, sig_handlerSTP);
+    signal(SIGTERM, sig_handlerTERM);
+
+
+    //set pathlist
+    pathlist = get_path();
+
+
+    uid = getuid();
+    password_entry = getpwuid(uid);               /* get passwd info */
+    homedir = password_entry->pw_dir;
 }
