@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <string,h>
+#include <string.h>
 
 void redirect_output(char* filename, char **envp, char* symbol){
         int fid;

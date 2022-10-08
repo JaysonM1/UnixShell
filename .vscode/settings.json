@@ -10,7 +10,10 @@
         "string.h": "c",
         "wildcard.h": "c",
         "readcommand.h": "c",
-        "output.h": "c"
+        "output.h": "c",
+        "which.h": "c",
+        "fcntl.h": "c",
+        "basic.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

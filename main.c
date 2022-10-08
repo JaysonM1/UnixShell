@@ -18,6 +18,7 @@
 #include "./terminal/redirect.h"
 #include "./terminal/pipefunction.h"
 #include "./terminal/output.h"
+#include "./commandHandler/basics/basic.h"
 
 int main(int argc, char **argv, char **envp){
     //Shell variables:
@@ -74,5 +75,19 @@ int main(int argc, char **argv, char **envp){
           //read command that the user enters and parses the command
         read_command(command, para, &numParameters, args);
         set_redirect(command, para, &numParameters, args, envp);
+        if(strcmp (command, "newline") == 0){     }
+		
+		else if(strcmp (command, "hello") == 0){
+   			printf("Executing built-in [hello]");
+   			printf("\nHELLO\n"); 
+		}  
+		else if(strcmp (command, "exit") == 0){
+            printf("Executing built-in [exit]\n");
+            break;
+  		}
+		else if( strcmp (command, "which") == 0){
+			printf("Executing built-in [which]\n");
+			which(para[0], pathlist);
+ 		}
      }
 }
