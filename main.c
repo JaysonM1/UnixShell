@@ -131,5 +131,97 @@ int main(int argc, char **argv, char **envp){
 				printls(para[0]);
 			}
 		}
+		  //check for kill command
+		else if( strcmp(command, "kill") == 0){
+			printf("Executing built-in [kill]");
+			mykill(para, numParameters);
+		}
+		else if( strcmp(command, "pid") == 0){
+			printf("Executing built-in [pid]\n");
+			printf("%ld \n",(long)getpid());
+		}
+		else if( strcmp(command, "prompt") == 0){
+      		if(numParameters == 0){
+				printf("\tinput prompt prefix:");
+				fgets(prompt, 64, stdin);
+				prompt = strtok(prompt, " \n");
+    		}
+    		else
+      			strcpy(prompt,para[0]);
+  		}	
+		else if( strcmp(command, "printenv") == 0){
+    		printf("Executing built-in [printenv]\n");
+    		printenv(envp,para,numParameters);
+  		}
+		else if( strcmp(command, "setenv") == 0){
+			if(numParameters == 0){
+				printenv(envp,para,numParameters);
+			}
+			else if(numParameters == 1){
+				putenv(para[0]);
+			}
+			else if(numParameters == 2){
+				setenv(para[0],para[1],1);
+			}
+			else
+				printf("Error\n");
+ 		}
+		  //watch user
+  		else if(strcmp(command, "watchuser") == 0){
+			if(numParameters > 2 || numParameters == 0){
+				printf("Incorrect arguemnts for watchuser");
+			}
+			else{
+				if(numParameters == 1){
+					watchuser(para[0],0);
+				}
+				else if((numParameters == 2) && (strcmp(para[1],"off"))){
+					watchuser(para[0],1);
+				}
+			}
+		}
+		else if(command[0] == '.' || command[0] == '/'){
+      		absolute_command(command, args, envp, pid, numParameters);
+			continue;
+		}
+		else {
+			while (pathlist) {         // search for the command
+				sprintf(search,"%s/%s", pathlist->element,command);
+				//if command found will run the command
+				if (access(search, X_OK) == 0) {
+					printf("Executing [%s]" , search);
+				
+				//fork returns the parent id to the parent and for the child if the child is made
+				pid = fork();
+					if(pid == 0){
+				//execvp will run command
+				//note for later expand funtionality to include commands with no parameters
+				//set_redirect(command, para, &numParameters, args, envp);
+				execve(search, args, envp);
+				}
+				//waitpid with 0 as option so that the parent will
+				//wait for the child to finish before any other
+				//commands will be taken in
+				else {                          /* parent */
+					waitpid(pid, NULL, 0); 
+				}
+				printf("\n");
+					break;
+				}
+				pathlist = pathlist->next;
+				}
+				//if the command is not found will return a message
+				if(pathlist == NULL){
+				printf("\n%s: Command not found.", command);
+			}
+		}
 	}
+	 //free mem here
+	free(command);
+	free(para);
+	free(args);
+	free(prompt);
+	free(search);
+	pthread_join(watchUse,NULL);
+	return 0;
 }

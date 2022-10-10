@@ -4,11 +4,7 @@
 #include <string.h>
 #include "node.h"
 
-struct Node{
-	struct Node *prev;
-    char* user;
-    struct Node *next;
-};
+
 struct Node* head = NULL;
 
 struct Node* getNode(char *name){
