@@ -19,75 +19,91 @@
 #include "./terminal/pipefunction.h"
 #include "./terminal/output.h"
 #include "./commandHandler/basics/basic.h"
+#include "./nodes/node.h"
 
 int main(int argc, char **argv, char **envp){
-    //Shell variables:
-    char *prompt = calloc(PROMPTMAX, sizeof(char));
-    char *pwd;
-    setenv("noclobber", "0", 1);
-    
-    int uid, i, status, argsct, go = 1;
-    struct passwd *password_entry;
-    char *homedir;
-    struct pathelement *pathlist;
+	//Shell variables:
+	char *prompt = calloc(PROMPTMAX, sizeof(char));
+	char *pwd;
+	setenv("noclobber", "0", 1);
 
-    char *prev = getcwd(NULL,0);
-    char *save = getcwd(NULL,0);
-    int cdaint=1;
+	int uid, i, status, argsct, go = 1;
+	struct passwd *password_entry;
+	char *homedir;
+	struct pathelement *pathlist;
 
-    //char command[100];
-    char *command = calloc(PROMPTMAX, sizeof(char));
-    int numParameters;
+	char *prev = getcwd(NULL,0);
+	char *save = getcwd(NULL,0);
+	int cdaint=1;
 
-
-    //command and parameter variables
-    char **args = calloc(MAXARGS, sizeof(char*));
-    //char *para[20];
-    char **para = calloc(MAXARGS, sizeof(char*));
+	//char command[100];
+	char *command = calloc(PROMPTMAX, sizeof(char));
+	int numParameters;
 
 
-    //external command variables
-    //char search[128];
-    char *search = calloc(PROMPTMAX, sizeof(char));
-    signal(SIGINT, sigintHandler); 
-    signal(SIGTSTP, sig_handlerSTP);
-    signal(SIGTERM, sig_handlerTERM);
+	//command and parameter variables
+	char **args = calloc(MAXARGS, sizeof(char*));
+	//char *para[20];
+	char **para = calloc(MAXARGS, sizeof(char*));
 
 
-    //set pathlist
-    pathlist = get_path();
+	//external command variables
+	//char search[128];
+	char *search = calloc(PROMPTMAX, sizeof(char));
+	signal(SIGINT, sigintHandler); 
+	signal(SIGTSTP, sig_handlerSTP);
+	signal(SIGTERM, sig_handlerTERM);
 
 
-    uid = getuid();
-    password_entry = getpwuid(uid);               /* get passwd info */
-    homedir = password_entry->pw_dir;
+	//set pathlist
+	pathlist = get_path();
 
-    //shell loop
-     while(1){
 
-        //update pathlist and current directory
-        redirect_terminal();
-        pathlist = get_path();
-        pwd = getcwd(NULL, 0);
-        //prompt msg to user
-        printf("%s [%s]>", prompt, pwd);
+	uid = getuid();
+	password_entry = getpwuid(uid);               /* get passwd info */
+	homedir = password_entry->pw_dir;
 
-          //read command that the user enters and parses the command
-        read_command(command, para, &numParameters, args);
-        set_redirect(command, para, &numParameters, args, envp);
-        if(strcmp (command, "newline") == 0){     }
-		
+	//shell loop
+	while(1){
+
+		//update pathlist and current directory
+		redirect_terminal();
+		pathlist = get_path();
+		pwd = getcwd(NULL, 0);
+		//prompt msg to user
+		printf("%s [%s]>", prompt, pwd);
+
+		//read command that the user enters and parses the command
+		read_command(command, para, &numParameters, args);
+		set_redirect(command, para, &numParameters, args, envp);
+		if(strcmp (command, "newline") == 0){     }
+			
 		else if(strcmp (command, "hello") == 0){
-   			printf("Executing built-in [hello]");
-   			printf("\nHELLO\n"); 
+			printf("Executing built-in [hello]");
+			printf("\nHELLO\n"); 
 		}  
 		else if(strcmp (command, "exit") == 0){
-            printf("Executing built-in [exit]\n");
-            break;
-  		}
-		else if( strcmp (command, "which") == 0){
+			printf("Executing built-in [exit]\n");
+			break;
+		}
+		else if(strcmp (command, "which") == 0){
 			printf("Executing built-in [which]\n");
 			which(para[0], pathlist);
- 		}
-     }
+		}
+		else if( strcmp(command, "where") == 0){
+			printf("Executing built-in [where]\n");
+			where(para[0], pathlist);
+		}
+		else if( strcmp(command, "cd") == 0){
+			printf("Executing built-in [cd]\n");
+			if(cdaint % 2 == 1){
+				prev = getcwd(NULL,0);   
+				cd(para, numParameters, homedir,save);
+			}else{
+				save = getcwd(NULL,0);
+			cd(para,numParameters,homedir,prev);
+			}
+			cdaint = cdaint + 1;
+		}
+	}
 }

@@ -5,8 +5,6 @@ struct pathelement *get_path()
   /* path is a copy of the PATH and p is a temp pointer */
   char *path, *p;
 
-  /* tmp is a temp point used to create a linked list and pathlist is a
-     pointer to the head of the list */
   struct pathelement *tmp, *pathlist = NULL;
 
   p = getenv("PATH");	/* get a pointer to the PATH env var.
@@ -17,9 +15,9 @@ struct pathelement *get_path()
   path[strlen(p)] = '\0';
 
   p = strtok(path, ":"); 	/* PATH is : delimited */
-  do				/* loop through the PATH */
-  {				/* to build a linked list of dirs */
-    if ( !pathlist )		/* create head of list */
+  do				
+  {				
+    if ( !pathlist )		
     {
       tmp = calloc(1, sizeof(struct pathelement));
       pathlist = tmp;
