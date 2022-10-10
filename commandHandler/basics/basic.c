@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <dirent.h>
 #include "basic.h"
 #include "../../getPath/get_path.h"
 
@@ -49,3 +50,17 @@ void cd(char **para, int numArgs, const char *homedir,char *prev){
 	}
 }
 
+void printls(char *p){
+	DIR *dp;
+	struct dirent *dirp;
+	if(opendir(p) == NULL){
+		perror("");
+	}
+	else{
+	  dp = opendir(p);
+	  while((dirp = readdir(dp)) != NULL)
+                printf("%s\n", dirp->d_name);
+          closedir(dp);
+	}
+
+}

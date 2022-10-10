@@ -105,5 +105,31 @@ int main(int argc, char **argv, char **envp){
 			}
 			cdaint = cdaint + 1;
 		}
+		  //checks and runs pwd
+  		else if(strcmp(command, "pwd") == 0){
+   			printf("Executing built-in [pwd]\n");
+   			printf("%s\n" , pwd);
+       	}
+		  //gets the first parameter of the passed command
+  		else if(strcmp(command, "para") == 0){
+   			printf("\n%s" , para[0]);
+			printf("\n%d" , numParameters);
+			printf("\n%s", command);
+  		}
+		else if(strcmp(command, "args") ==0){
+			int iterArgs =0; 
+			while(args[iterArgs] != NULL){
+				printf("%s\n" , args[iterArgs]);
+				iterArgs ++;
+			}
+  		}
+		else if( strcmp(command, "ls") == 0){
+		printf("Executing built-in [ls]");
+			if(numParameters == 0){
+				printls(pwd);}
+			else if(numParameters == 1){
+				printls(para[0]);
+			}
+		}
 	}
 }
